@@ -19,4 +19,4 @@ pipeline:
     source: /drone/src/github.com/i4slabs/nanomsg/nanomsg_1.0.0-1_amd64.deb
     target: /nanomsg/1.0.0/ubuntu/xenial
     recursive: false
-    strip_prefix: true
+    strip_prefix:
