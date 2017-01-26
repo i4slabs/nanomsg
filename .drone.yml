@@ -1,0 +1,22 @@
+pipeline:
+
+  build:
+    image: ubuntu:xenial
+    commands:
+      - apt-get update
+      - apt-get upgrade -qyy
+      - apt-get -o APT::Install-Recommends=false -o APT::Install-Suggests=false install -y gcc build-essential cmake checkinstall
+      - ./configure
+      - make
+      - checkinstall -D -y --pkggroup secdevops-vats --pkgname nanomsg --pkgversion 1.0.0 --pkglicense MIT --pkgsource https://github.com/nanomsg/nanomsg --pkgaltsource http://nanomsg.org --maintainer I4S  --nodoc  --install=no --showinstall=no
+
+
+  s3:
+    image: plugins/s3
+    acl: public-read
+    region: eu-west-1
+    bucket: tf-secdevops-drone
+    source: /drone/src/github.com/i4slabs/nanomsg/nanomsg_1.0.0-1_amd64.deb
+    target: /nanomsg/1.0.0/ubuntu/xenial
+    recursive: false
+    strip_prefix: true
