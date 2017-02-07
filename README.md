@@ -1,6 +1,6 @@
 Welcome to nanomsg
 ==================
-
+[![Build Status](http://drone.dev.secdevops.i4slabs.com/api/badges/i4slabs/nanomsg/status.svg)](http://drone.dev.secdevops.i4slabs.com/i4slabs/nanomsg)
 [![Release](https://img.shields.io/github/release/nanomsg/nanomsg.svg)](https://github.com/nanomsg/nanomsg/releases/latest)
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/nanomsg/nanomsg/blob/master/COPYING)
 [![Linux Status](https://img.shields.io/travis/nanomsg/nanomsg/master.svg?label=linux)](https://travis-ci.org/nanomsg/nanomsg)
