@@ -3,6 +3,7 @@ pipeline:
   build:
     image: ubuntu:xenial
     commands:
+      - export
       - apt-get update
       - apt-get upgrade -qyy
       - apt-get -o APT::Install-Recommends=false -o APT::Install-Suggests=false install -y gcc build-essential cmake checkinstall
