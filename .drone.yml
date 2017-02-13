@@ -10,9 +10,6 @@ pipeline:
       - ./configure
       - make
       - checkinstall -D -y --pkggroup secdevops-vats --pkgname nanomsg --pkgversion ${DRONE_TAG} --pkglicense MIT --pkgsource https://github.com/nanomsg/nanomsg --pkgaltsource http://nanomsg.org --maintainer I4S  --nodoc  --install=no --showinstall=no
-
-
-
   s3:
     image: plugins/s3
     acl: public-read
