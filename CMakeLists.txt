@@ -2,8 +2,8 @@
 #   Copyright (c) 2012 Martin Sustrik  All rights reserved.
 #   Copyright (c) 2013 GoPivotal, Inc.  All rights reserved.
 #   Copyright (c) 2015-2016 Jack R. Dunaway. All rights reserved.
-#   Copyright 2016 Garrett D'Amore <garrett@damore.org>
 #   Copyright 2016 Franklin "Snaipe" Mathieu <franklinmathieu@gmail.com>
+#   Copyright 2017 Garrett D'Amore <garrett@damore.org>
 #
 #   Permission is hereby granted, free of charge, to any person obtaining a copy
 #   of this software and associated documentation files (the "Software"),
@@ -58,8 +58,9 @@ string (REGEX REPLACE ".*#define +NN_VERSION_AGE +([0-9]+).*" "\\1" NN_VERSION_A
 if ((NN_VERSION_CURRENT STREQUAL "") OR (NN_VERSION_REVISION STREQUAL "") OR (NN_VERSION_AGE STREQUAL ""))
     message (FATAL_ERROR "Could not read ABI version from nn.h")
 else ()
-    set (NN_ABI_VERSION "${NN_VERSION_CURRENT}.${NN_VERSION_REVISION}.${NN_VERSION_AGE}")
-    message (STATUS "Detected nanomsg ABI v${NN_ABI_VERSION}")
+    set (NN_ABI_VERSION "${NN_VERSION_CURRENT}")
+    set (NN_LIB_VERSION "${NN_VERSION_CURRENT}.${NN_VERSION_REVISION}.${NN_VERSION_AGE}")
+    message (STATUS "Detected nanomsg ABI v${NN_ABI_VERSION} (v${NN_LIB_VERSION})")
 endif ()
 
 # Determine package version.
@@ -101,13 +102,19 @@ option (NN_ENABLE_GETADDRINFO_A "Enable/disable use of getaddrinfo_a in place of
 option (NN_TESTS "Build and run nanomsg tests" ON)
 option (NN_TOOLS "Build nanomsg tools" ON)
 option (NN_ENABLE_NANOCAT "Enable building nanocat utility." ${NN_TOOLS})
+set (NN_MAX_SOCKETS 512 CACHE STRING "max number of nanomsg sockets that can be created")
 
 #  Platform checks.
 
 find_package (Threads REQUIRED)
 
+message(STATUS "OS System is ${CMAKE_SYSTEM_NAME}")
+message(STATUS "OS Version is ${CMAKE_SYSTEM_VERSION}")
 if (CMAKE_SYSTEM_NAME MATCHES "Linux")
     add_definitions (-DNN_HAVE_LINUX)
+    if (CMAKE_SYSTEM_VERSION MATCHES "Microsoft")
+        add_definitions (-DNN_HAVE_WSL)
+    endif()
 elseif (CMAKE_SYSTEM_NAME MATCHES "Darwin")
     add_definitions (-DNN_HAVE_OSX)
 elseif (CMAKE_SYSTEM_NAME MATCHES "Windows")
@@ -237,6 +244,8 @@ if (NN_HAVE_GCC_ATOMIC_BUILTINS)
     add_definitions (-DNN_HAVE_GCC_ATOMIC_BUILTINS)
 endif ()
 
+add_definitions(-DNN_MAX_SOCKETS=${NN_MAX_SOCKETS})
+
 add_subdirectory (src)
 
 #  Build the tools
@@ -362,9 +371,9 @@ if (NN_TESTS)
     add_libnanomsg_test (ipc 5)
     add_libnanomsg_test (ipc_shutdown 30)
     add_libnanomsg_test (ipc_stress 5)
-    add_libnanomsg_test (tcp 5)
+    add_libnanomsg_test (tcp 20)
     add_libnanomsg_test (tcp_shutdown 120)
-    add_libnanomsg_test (ws 5)
+    add_libnanomsg_test (ws 20)
 
     #  Protocol tests.
     add_libnanomsg_test (pair 5)
